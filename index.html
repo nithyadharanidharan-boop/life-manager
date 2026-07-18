@@ -1,7 +1,6 @@
 <script>
   const messageEl = document.getElementById('message');
 
-  // Fake "database" in localStorage
   function getUsers() {
     const raw = localStorage.getItem('lm-users');
     return raw ? JSON.parse(raw) : [];
@@ -11,7 +10,6 @@
     localStorage.setItem('lm-users', JSON.stringify(users));
   }
 
-  // Signup handler (pure front-end)
   document.getElementById('signup-form').addEventListener('submit', (e) => {
     e.preventDefault();
 
@@ -38,7 +36,6 @@
     e.target.reset();
   });
 
-  // Login handler (pure front-end)
   document.getElementById('login-form').addEventListener('submit', (e) => {
     e.preventDefault();
 
@@ -59,7 +56,5 @@
     }
 
     messageEl.textContent = `Welcome back, ${user.username}! (demo login)`;
-    // For a real app, you would redirect or show a dashboard here:
-    // window.location.href = 'dashboard.html';
   });
 </script>
