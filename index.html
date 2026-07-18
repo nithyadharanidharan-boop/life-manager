@@ -1,65 +1,76 @@
-<script>
-  const messageEl = document.getElementById('message');
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Life Manager - Login / Signup</title>
+</head>
+<body>
+  <h1>Life Manager</h1>
 
-  // Fake "database" in localStorage
-  function getUsers() {
-    const raw = localStorage.getItem('lm-users');
-    return raw ? JSON.parse(raw) : [];
-  }
+  <h2>Signup</h2>
+  <form id="signup-form">
+    <input type="text" id="signup-username" placeholder="Username" required />
+    <input type="email" id="signup-email" placeholder="Email" required />
+    <input type="password" id="signup-password" placeholder="Password" required />
+    <button type="submit">Sign Up</button>
+  </form>
 
-  function saveUsers(users) {
-    localStorage.setItem('lm-users', JSON.stringify(users));
-  }
+  <h2>Login</h2>
+  <form id="login-form">
+    <input type="email" id="login-email" placeholder="Email" required />
+    <input type="password" id="login-password" placeholder="Password" required />
+    <button type="submit">Login</button>
+  </form>
 
-  // Signup handler (pure front-end)
-  document.getElementById('signup-form').addEventListener('submit', (e) => {
-    e.preventDefault();
+  <p id="message"></p>
 
-    const username = document.getElementById('signup-username').value.trim();
-    const email = document.getElementById('signup-email').value.trim();
-    const password = document.getElementById('signup-password').value;
+  <script>
+    const messageEl = document.getElementById('message');
 
-    if (!username || !email || !password) {
-      messageEl.textContent = 'Please fill all signup fields';
-      return;
-    }
+    // Signup handler
+    document.getElementById('signup-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const username = document.getElementById('signup-username').value;
+      const email = document.getElementById('signup-email').value;
+      const password = document.getElementById('signup-password').value;
 
-    const users = getUsers();
+      try {
+        const res = await fetch('/api/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, email, password }),
+        });
+        const data = await res.json();
+        messageEl.textContent = data.message || 'Signup response received';
+      } catch (err) {
+        messageEl.textContent = 'Error during signup';
+      }
+    });
 
-    if (users.some(u => u.email === email)) {
-      messageEl.textContent = 'An account with this email already exists';
-      return;
-    }
+    // Login handler
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('login-email').value;
+      const password = document.getElementById('login-password').value;
 
-    users.push({ username, email, password });
-    saveUsers(users);
-
-    messageEl.textContent = 'Signup successful! You can now log in.';
-    e.target.reset();
-  });
-
-  // Login handler (pure front-end)
-  document.getElementById('login-form').addEventListener('submit', (e) => {
-    e.preventDefault();
-
-    const email = document.getElementById('login-email').value.trim();
-    const password = document.getElementById('login-password').value;
-
-    if (!email || !password) {
-      messageEl.textContent = 'Please enter email and password';
-      return;
-    }
-
-    const users = getUsers();
-    const user = users.find(u => u.email === email && u.password === password);
-
-    if (!user) {
-      messageEl.textContent = 'Invalid email or password';
-      return;
-    }
-
-    messageEl.textContent = `Welcome back, ${user.username}! (demo login)`;
-    // For a real app, you would redirect or show a dashboard here:
-    // window.location.href = 'dashboard.html';
-  });
-</script>
+      try {
+        const res = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password }),
+        });
+        const data = await res.json();
+        if (res.ok) {
+          messageEl.textContent = 'Login successful';
+          // redirect to dashboard
+          window.location.href = '/dashboard.html';
+        } else {
+          messageEl.textContent = data.message || 'Login failed';
+        }
+      } catch (err) {
+        messageEl.textContent = 'Error during login';
+      }
+    });
+  </script>
+</body>
+</html>
