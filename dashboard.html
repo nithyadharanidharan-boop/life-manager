@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Life Manager – Dashboard</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script src="utils.js"></script>
+  <script src="dashboard.js" defer></script>
+</head>
+<body>
+  <header class="dashboard-header">
+    <div>
+      <h1>Life Manager</h1>
+      <p class="greeting" id="greeting">Hi, …</p>
+    </div>
+    <div class="header-actions">
+      <a href="settings.html" class="btn btn-secondary btn-sm">Settings</a>
+      <button type="button" id="logout-btn" class="btn btn-secondary btn-sm">Log Out</button>
+    </div>
+  </header>
+
+  <main class="dashboard-main">
+    <div class="dashboard-grid">
+
+      <!-- Tasks -->
+      <section class="section-card span-2">
+        <h2>Tasks</h2>
+        <form id="task-form" class="section-form">
+          <div class="form-row">
+            <input type="text" id="task-title" placeholder="Task title" required />
+            <input type="date" id="task-due" />
+            <button type="submit" class="btn btn-primary btn-sm">Add Task</button>
+          </div>
+        </form>
+        <ul id="tasks-list" class="item-list"></ul>
+      </section>
+
+      <!-- Habits -->
+      <section class="section-card">
+        <h2>Habits</h2>
+        <form id="habit-form" class="section-form">
+          <div class="form-row">
+            <input type="text" id="habit-name" placeholder="e.g. Workout, Read 30 min" required />
+            <button type="submit" class="btn btn-primary btn-sm">Add</button>
+          </div>
+        </form>
+        <ul id="habits-list" class="item-list"></ul>
+      </section>
+
+      <!-- Goals -->
+      <section class="section-card">
+        <h2>Goals</h2>
+        <form id="goal-form" class="section-form">
+          <input type="text" id="goal-title" placeholder="Goal title" required />
+          <textarea id="goal-description" placeholder="Description (optional)"></textarea>
+          <div class="form-row">
+            <input type="date" id="goal-target" />
+            <input type="number" id="goal-progress" min="0" max="100" value="0" placeholder="Progress %" />
+            <button type="submit" class="btn btn-primary btn-sm">Add Goal</button>
+          </div>
+        </form>
+        <ul id="goals-list" class="item-list"></ul>
+      </section>
+
+      <!-- Notes -->
+      <section class="section-card span-2">
+        <h2>Notes / Journal</h2>
+        <form id="note-form" class="section-form">
+          <textarea id="note-text" placeholder="Write a quick note…" required></textarea>
+          <button type="submit" class="btn btn-primary btn-sm">Save Note</button>
+        </form>
+        <ul id="notes-list" class="item-list"></ul>
+      </section>
+
+    </div>
+  </main>
+</body>
+</html>

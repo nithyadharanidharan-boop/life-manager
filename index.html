@@ -1,60 +1,56 @@
-<script>
-  const messageEl = document.getElementById('message');
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Life Manager – Login</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script src="utils.js"></script>
+  <script src="auth.js" defer></script>
+</head>
+<body class="auth-page">
+  <div class="auth-card">
+    <h1>Life Manager</h1>
+    <p class="auth-subtitle">Organize tasks, habits, goals &amp; notes</p>
 
-  function getUsers() {
-    const raw = localStorage.getItem('lm-users');
-    return raw ? JSON.parse(raw) : [];
-  }
+    <div class="auth-tabs">
+      <button type="button" class="auth-tab active" data-tab="login">Login</button>
+      <button type="button" class="auth-tab" data-tab="signup">Sign Up</button>
+    </div>
 
-  function saveUsers(users) {
-    localStorage.setItem('lm-users', JSON.stringify(users));
-  }
+    <div id="login-panel" class="auth-panel active">
+      <form id="login-form">
+        <div class="form-group">
+          <label for="login-email">Email</label>
+          <input type="email" id="login-email" placeholder="you@example.com" required autocomplete="email" />
+        </div>
+        <div class="form-group">
+          <label for="login-password">Password</label>
+          <input type="password" id="login-password" placeholder="Your password" required autocomplete="current-password" />
+        </div>
+        <button type="submit" class="btn btn-primary">Log In</button>
+      </form>
+    </div>
 
-  document.getElementById('signup-form').addEventListener('submit', (e) => {
-    e.preventDefault();
+    <div id="signup-panel" class="auth-panel">
+      <form id="signup-form">
+        <div class="form-group">
+          <label for="signup-username">Username</label>
+          <input type="text" id="signup-username" placeholder="Your name" required autocomplete="username" />
+        </div>
+        <div class="form-group">
+          <label for="signup-email">Email</label>
+          <input type="email" id="signup-email" placeholder="you@example.com" required autocomplete="email" />
+        </div>
+        <div class="form-group">
+          <label for="signup-password">Password</label>
+          <input type="password" id="signup-password" placeholder="Choose a password" required autocomplete="new-password" />
+        </div>
+        <button type="submit" class="btn btn-primary">Create Account</button>
+      </form>
+    </div>
 
-    const username = document.getElementById('signup-username').value.trim();
-    const email = document.getElementById('signup-email').value.trim();
-    const password = document.getElementById('signup-password').value;
-
-    if (!username || !email || !password) {
-      messageEl.textContent = 'Please fill all signup fields';
-      return;
-    }
-
-    const users = getUsers();
-
-    if (users.some(u => u.email === email)) {
-      messageEl.textContent = 'An account with this email already exists';
-      return;
-    }
-
-    users.push({ username, email, password });
-    saveUsers(users);
-
-    messageEl.textContent = 'Signup successful! You can now log in.';
-    e.target.reset();
-  });
-
-  document.getElementById('login-form').addEventListener('submit', (e) => {
-    e.preventDefault();
-
-    const email = document.getElementById('login-email').value.trim();
-    const password = document.getElementById('login-password').value;
-
-    if (!email || !password) {
-      messageEl.textContent = 'Please enter email and password';
-      return;
-    }
-
-    const users = getUsers();
-    const user = users.find(u => u.email === email && u.password === password);
-
-    if (!user) {
-      messageEl.textContent = 'Invalid email or password';
-      return;
-    }
-
-    messageEl.textContent = `Welcome back, ${user.username}! (demo login)`;
-  });
-</script>
+    <p id="message" class="message"></p>
+  </div>
+</body>
+</html>
