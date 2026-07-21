@@ -2,7 +2,6 @@ const express = require('express');
 const dotenv = require('dotenv');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
-const path = require('path');
 
 // Route modules
 const authRoutes = require('./routes/authRoutes');
@@ -32,16 +31,6 @@ app.use(
 // Serve static files (HTML, CSS, JS) from the "public" folder
 // Make sure "public" is at the same level as index.js
 app.use(express.static('public'));
-
-// Manual test route to serve test.html directly
-app.get('/test-manual', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'test.html'));
-});
-
-// Home route (API-only)
-app.get('/', (req, res) => {
-  res.send('Personal Life Manager API is running');
-});
 
 // Authentication routes (signup/login)
 app.use('/api/auth', authRoutes);
