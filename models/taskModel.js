@@ -1,7 +1,41 @@
-// Temporary in-memory task store
-const tasks = [];
+const mongoose = require('mongoose');
 
-// Each task will look like:
-// { id, title, description, dueAt, status, priority, alarmEnabled }
+const taskSchema = new mongoose.Schema(
+  {
+    title: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    description: {
+      type: String,
+      default: '',
+      trim: true,
+    },
+    dueAt: {
+      type: String,
+      required: true,
+    },
+    status: {
+      type: String,
+      enum: ['todo', 'done'],
+      default: 'todo',
+    },
+    priority: {
+      type: String,
+      enum: ['low', 'normal', 'high'],
+      default: 'normal',
+    },
+    alarmEnabled: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
 
-module.exports = { tasks };
+const Task = mongoose.model('Task', taskSchema);
+
+module.exports = Task;

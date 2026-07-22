@@ -3,6 +3,7 @@ const dotenv = require('dotenv');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const path = require('path');
+const { connectDB } = require('./config/db');
 
 // Route modules
 const authRoutes = require('./routes/authRoutes');
@@ -22,10 +23,10 @@ app.use(cookieParser());
 // Basic session setup
 app.use(
   session({
-    secret: 'very_secret_key', // later move to .env
+    secret: process.env.SESSION_SECRET || 'very_secret_key',
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: false }, // set true only when you use HTTPS
+    cookie: { secure: false },
   })
 );
 
@@ -42,8 +43,12 @@ app.use('/api/savings', savingsRoutes);
 // Tasks routes
 app.use('/api/tasks', taskRoutes);
 
+app.get('/health', (req, res) => {
+  res.json({ status: 'ok' });
+});
+
 // Send React app for any non-API route (SPA fallback)
-app.get('*', (req, res) => {
+app.use((req, res) => {
   if (req.path.startsWith('/api/')) {
     return res.status(404).send('API route not found');
   }
@@ -54,9 +59,17 @@ app.get('*', (req, res) => {
 const PORT = process.env.PORT || 5000;
 
 if (require.main === module) {
-  app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-  });
+  connectDB()
+    .then(() => {
+      app.listen(PORT, () => {
+        console.log(`Server is running on port ${PORT}`);
+      });
+    })
+    .catch((error) => {
+      console.error('Failed to connect to MongoDB:', error.message);
+      console.error('Start a local MongoDB server or set MONGO_URI to a reachable Atlas connection string.');
+      process.exit(1);
+    });
 }
 
 module.exports = app;

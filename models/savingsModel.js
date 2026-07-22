@@ -1,7 +1,32 @@
-// Temporary in-memory savings store
-const savingsEntries = [];
+const mongoose = require('mongoose');
 
-// Each entry will look like:
-// { id, amount, type, description, date }
+const savingsSchema = new mongoose.Schema(
+  {
+    amount: {
+      type: Number,
+      required: true,
+      min: 0,
+    },
+    type: {
+      type: String,
+      enum: ['income', 'expense'],
+      required: true,
+    },
+    description: {
+      type: String,
+      default: '',
+      trim: true,
+    },
+    date: {
+      type: String,
+      required: true,
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
 
-module.exports = { savingsEntries };
+const Savings = mongoose.model('Savings', savingsSchema);
+
+module.exports = Savings;
