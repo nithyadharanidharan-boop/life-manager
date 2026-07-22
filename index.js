@@ -66,8 +66,7 @@ if (require.main === module) {
       });
     })
     .catch((error) => {
-      console.error('Failed to connect to MongoDB:', error.message);
-      console.error('Start a local MongoDB server or set MONGO_URI to a reachable Atlas connection string.');
+      console.error('Unexpected error during startup:', error.message);
       process.exit(1);
     });
 }

@@ -1,9 +1,20 @@
 const express = require('express');
 const Task = require('../models/taskModel');
+const { dbStatus } = require('../config/db');
 
 const router = express.Router();
 
+function ensureDbAvailable(res) {
+  if (!dbStatus.connected) {
+    return res.status(503).json({ message: 'Database is temporarily unavailable. Please try again later.' });
+  }
+  return null;
+}
+
 router.post('/', async (req, res) => {
+  const unavailable = ensureDbAvailable(res);
+  if (unavailable) return unavailable;
+
   try {
     const { title, description, dueAt, priority, alarmEnabled } = req.body;
 
@@ -39,6 +50,9 @@ router.post('/', async (req, res) => {
 });
 
 router.get('/', async (req, res) => {
+  const unavailable = ensureDbAvailable(res);
+  if (unavailable) return unavailable;
+
   try {
     const tasks = await Task.find({}).sort({ dueAt: 1 });
     return res.status(200).json({
@@ -60,6 +74,9 @@ router.get('/', async (req, res) => {
 });
 
 router.put('/:id', async (req, res) => {
+  const unavailable = ensureDbAvailable(res);
+  if (unavailable) return unavailable;
+
   try {
     const task = await Task.findById(req.params.id);
 
@@ -97,6 +114,9 @@ router.put('/:id', async (req, res) => {
 });
 
 router.delete('/:id', async (req, res) => {
+  const unavailable = ensureDbAvailable(res);
+  if (unavailable) return unavailable;
+
   try {
     const result = await Task.deleteOne({ _id: req.params.id });
 

@@ -1,10 +1,21 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const User = require('../models/userModel');
+const { dbStatus } = require('../config/db');
 
 const router = express.Router();
 
+function ensureDbAvailable(res) {
+  if (!dbStatus.connected) {
+    return res.status(503).json({ message: 'Database is temporarily unavailable. Please try again later.' });
+  }
+  return null;
+}
+
 router.post('/register', async (req, res) => {
+  const unavailable = ensureDbAvailable(res);
+  if (unavailable) return unavailable;
+
   try {
     const { username, email, password } = req.body;
 
@@ -45,6 +56,9 @@ router.post('/register', async (req, res) => {
 });
 
 router.post('/login', async (req, res) => {
+  const unavailable = ensureDbAvailable(res);
+  if (unavailable) return unavailable;
+
   try {
     const { email, password } = req.body;
 

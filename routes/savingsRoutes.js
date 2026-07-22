@@ -1,9 +1,20 @@
 const express = require('express');
 const Savings = require('../models/savingsModel');
+const { dbStatus } = require('../config/db');
 
 const router = express.Router();
 
+function ensureDbAvailable(res) {
+  if (!dbStatus.connected) {
+    return res.status(503).json({ message: 'Database is temporarily unavailable. Please try again later.' });
+  }
+  return null;
+}
+
 router.post('/', async (req, res) => {
+  const unavailable = ensureDbAvailable(res);
+  if (unavailable) return unavailable;
+
   try {
     const { amount, type, description, date } = req.body;
 
@@ -39,6 +50,9 @@ router.post('/', async (req, res) => {
 });
 
 router.get('/', async (req, res) => {
+  const unavailable = ensureDbAvailable(res);
+  if (unavailable) return unavailable;
+
   try {
     const entries = await Savings.find({}).sort({ date: 1 });
     return res.status(200).json({
