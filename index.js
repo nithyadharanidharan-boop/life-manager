@@ -2,6 +2,7 @@ const express = require('express');
 const dotenv = require('dotenv');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
+const path = require('path');
 
 // Route modules
 const authRoutes = require('./routes/authRoutes');
@@ -29,8 +30,8 @@ app.use(
 );
 
 // Serve static files (HTML, CSS, JS) from the "public" folder
-// Make sure "public" is at the same level as index.js
-app.use(express.static('public'));
+// Use __dirname so it works on Vercel and other deployment platforms
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Authentication routes (signup/login)
 app.use('/api/auth', authRoutes);
@@ -41,9 +42,21 @@ app.use('/api/savings', savingsRoutes);
 // Tasks routes
 app.use('/api/tasks', taskRoutes);
 
+// Send React app for any non-API route (SPA fallback)
+app.get('*', (req, res) => {
+  if (req.path.startsWith('/api/')) {
+    return res.status(404).send('API route not found');
+  }
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
 // Port configuration
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+  });
+}
+
+module.exports = app;

@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "build": "npm --prefix frontend run build",
+    "vercel-build": "npm run build"
   },
   "keywords": [],
   "author": "",
